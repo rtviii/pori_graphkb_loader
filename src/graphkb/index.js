@@ -8,10 +8,10 @@ const jwt = require('jsonwebtoken');
 const { schema } = require('@bcgsc-pori/graphkb-schema');
 const _ = require('lodash');
 
-const { graphkb: { name: INTERNAL_SOURCE_NAME } } = require('./sources');
+const { graphkb: { name: INTERNAL_SOURCE_NAME } } = require('../sources');
 
 
-const { logger } = require('./logging');
+const { logger } = require('../logging');
 
 
 const epochSeconds = () => Math.floor(new Date().getTime() / 1000);
@@ -24,6 +24,9 @@ const rid = (record, nullOk) => {
 };
 
 
+/**
+ * Given some record with links to other records, convert any nested objects to their ID as a string instead
+ */
 const simplifyRecordsLinks = (content, level = 0) => {
     if (typeof content === 'object' && content !== null) {
         const simple = {};
