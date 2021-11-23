@@ -9,35 +9,37 @@
  *
  * @module importer/clinicaltrialsgov
  */
+
 const path = require('path');
-const Ajv = require('ajv');
-const fs = require('fs');
+const Ajv  = require('ajv');
+const fs   = require('fs');
 
 const {
-    loadXmlToJson,
-    parseXmlToJson,
-    checkSpec,
+    loadXmlToJson   ,
+    parseXmlToJson  ,
+    checkSpec       ,
     requestWithRetry,
 } = require('../util');
+
 const {
     orderPreferredOntologyTerms,
     rid,
 } = require('../graphkb');
-const { logger } = require('../logging');
+
+const { logger }                         = require('../logging');
 const { clinicalTrialsGov: SOURCE_DEFN } = require('../sources');
 
-const BASE_URL = 'https://clinicaltrials.gov/ct2/show';
-const RSS_URL = 'https://clinicaltrials.gov/ct2/results/rss.xml';
-const CACHE = {};
-
-const ajv = new Ajv();
-
+const BASE_URL                           = 'https://clinicaltrials.gov/ct2/show';
+const RSS_URL                            = 'https://clinicaltrials.gov/ct2/results/rss.xml';
+const CACHE                              = {};
+const ajv                                = new Ajv();
 
 const singleItemArray = (spec = { type: 'string' }) => ({
     items: { ...spec }, maxItems: 1, minItems: 1, type: 'array',
 });
 
 const validateAPITrialRecord = ajv.compile({
+
     properties: {
         clinical_study: {
             properties: {
@@ -136,6 +138,7 @@ const validateAPITrialRecord = ajv.compile({
             type: 'object',
         },
     },
+
     required: ['clinical_study'],
     type: 'object',
 });

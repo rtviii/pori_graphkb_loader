@@ -18,17 +18,17 @@ const { sequenceOntology: SOURCE_DEFN } = require('./sources');
 const OWL_NAMESPACE = 'http://purl.obolibrary.org/obo/so/so-simple.owl';
 
 const PREDICATES = {
-    ALIASOF: 'http://www.geneontology.org/formats/oboInOwl#hasExactSynonym',
-    CROSSREF: 'http://www.geneontology.org/formats/oboInOwl#hasDbXref',
-    DEPRECATED: 'http://www.w3.org/2002/07/owl#deprecated',
-    DEPRECATEDBY: 'http://purl.obolibrary.org/obo/IAO_0100001',
-    DESCRIPTION: 'http://purl.obolibrary.org/obo/IAO_0000115',
+    ALIASOF       : 'http://www.geneontology.org/formats/oboInOwl#hasExactSynonym',
+    CROSSREF      : 'http://www.geneontology.org/formats/oboInOwl#hasDbXref'      ,
+    DEPRECATED    : 'http://www.w3.org/2002/07/owl#deprecated'                    ,
+    DEPRECATEDBY  : 'http://purl.obolibrary.org/obo/IAO_0100001'                  ,
+    DESCRIPTION   : 'http://purl.obolibrary.org/obo/IAO_0000115'                  ,
     GENERALIZATION: 'http://www.geneontology.org/formats/oboInOwl#hasBroadSynonym',
-    ID: 'http://www.geneontology.org/formats/oboInOwl#id',
-    LABEL: 'http://www.w3.org/2000/01/rdf-schema#label',
-    SUBCLASSOF: 'http://www.w3.org/2000/01/rdf-schema#subClassOf',
-    SUBSETOF: 'http://www.geneontology.org/formats/oboInOwl#inSubset',
-    TYPE: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+    ID            : 'http://www.geneontology.org/formats/oboInOwl#id'             ,
+    LABEL         : 'http://www.w3.org/2000/01/rdf-schema#label'                  ,
+    SUBCLASSOF    : 'http://www.w3.org/2000/01/rdf-schema#subClassOf'             ,
+    SUBSETOF      : 'http://www.geneontology.org/formats/oboInOwl#inSubset'       ,
+    TYPE          : 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'             ,
 };
 
 /**

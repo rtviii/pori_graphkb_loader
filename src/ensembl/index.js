@@ -25,10 +25,10 @@ const CACHE = {};
 const generalize = async (conn, record) => {
     const general = await conn.addRecord({
         content: {
-            biotype: record.biotype,
-            name: record.name,
-            source: record.source,
-            sourceId: record.sourceId,
+            biotype        : record.biotype,
+            name           : record.name,
+            source         : record.source,
+            sourceId       : record.sourceId,
             sourceIdVersion: null,
         },
         existsOk: true,
@@ -36,9 +36,9 @@ const generalize = async (conn, record) => {
     });
 
     await conn.addRecord({
-        content: { in: rid(record), out: rid(general), source: rid(record.source) },
+        content : { in: rid(record), out: rid(general), source: rid(record.source) },
         existsOk: true,
-        target: 'Generalizationof',
+        target  : 'Generalizationof',
     });
     return general;
 };
@@ -51,7 +51,7 @@ const generalize = async (conn, record) => {
 const linkFeatureToParent = async (conn, transcript, parentBiotype = 'gene') => {
     const { Parent: geneId } = await requestWithRetry({
         method: 'GET',
-        uri: `${BASE_URL}/lookup/id/${transcript.sourceId}`,
+        uri   : `${BASE_URL}/lookup/id/${transcript.sourceId}`,
     });
 
     if (!geneId) {
@@ -59,19 +59,19 @@ const linkFeatureToParent = async (conn, transcript, parentBiotype = 'gene') => 
     }
     const gene = await conn.addRecord({
         content: {
-            biotype: parentBiotype,
-            source: rid(transcript.source),
-            sourceId: geneId,
+            biotype        : parentBiotype,
+            source         : rid(transcript.source),
+            sourceId       : geneId,
             sourceIdVersion: null,
         },
         existsOk: true,
         target: 'Feature',
     });
     await conn.addRecord({
-        content: { in: rid(gene), out: rid(transcript), source: rid(transcript.source) },
-        existsOk: true,
+        content      : { in: rid(gene), out: rid(transcript), source: rid(transcript.source) },
+        existsOk     : true,
         fetchExisting: false,
-        target: 'ElementOf',
+        target       : 'ElementOf',
     });
     return gene;
 };
@@ -79,11 +79,12 @@ const linkFeatureToParent = async (conn, transcript, parentBiotype = 'gene') => 
 
 /**
  * Fetch and link the ensembl gene to the entrez gene
+ * ※ Because certain entrez genes are references to (but not necessarily versions of) entrez genes?
  */
 const linkGeneToEntrez = async (conn, record) => {
     const xrefs = await requestWithRetry({
         method: 'GET',
-        uri: `${BASE_URL}/xrefs/id/${record.sourceId}`,
+        uri   : `${BASE_URL}/xrefs/id/${record.sourceId}`,
     });
 
     for (const xref of xrefs) {
@@ -92,9 +93,9 @@ const linkGeneToEntrez = async (conn, record) => {
 
             // link to the current record
             await conn.addRecord({
-                content: { in: rid(gene), out: rid(record), source: rid(record.source) },
+                content : { in: rid(gene), out: rid(record), source: rid(record.source) },
                 existsOk: true,
-                target: 'CrossReferenceOf',
+                target  : 'CrossReferenceOf',
             });
             return gene;
         }
@@ -129,7 +130,9 @@ const fetchAndLoadById = async (conn, { sourceId, sourceIdVersion, biotype }) =>
             target: 'Feature',
         });
         CACHE[cacheKey] = result;
+        console.log("\x1b[94mAlready exists. Skipping\x1b[0m");
         return CACHE[cacheKey];
+
     } catch (err) {}
 
     const current = await conn.addRecord({
@@ -151,16 +154,23 @@ const fetchAndLoadById = async (conn, { sourceId, sourceIdVersion, biotype }) =>
     }
 
     if (biotype === 'gene') {
+
+        // pull up an entrez reference, create it in gdb, and create a crossreferenceof between current
         await linkGeneToEntrez(conn, current);
         return current;
+
     } if (biotype === 'transcript') {
-        // link to the gene
+
         await linkFeatureToParent(conn, generalCurrent, 'gene');
+
     } else if (biotype === 'protein') {
-        // link to the transcript
+
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>> In Protein");
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>> general current", generalCurrent);
         const transcript = await linkFeatureToParent(conn, generalCurrent, 'transcript');
-        // link to the gene
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>> transcript after linking", transcript );
         await linkFeatureToParent(conn, transcript, 'gene');
+
     } else {
         throw Error(`unsupported biotype: ${biotype}`);
     }

@@ -102,9 +102,11 @@ const shouldUpdate = (modelIn, originalContentIn, newContentIn, upsertCheckExclu
 };
 
 const generateCacheKey = (record) => {
+
     if (record.sourceIdVersion !== undefined && record.sourceIdVersion !== null) {
         return `${record.sourceId}-${record.sourceIdVersion}`.toLowerCase();
     }
+
     return `${record.sourceId}`.toLowerCase();
 };
 
@@ -205,15 +207,15 @@ class ApiConnection {
      * @param {string} url the base url for the api
      */
     constructor(url) {
-        this.baseUrl = url;
-        this.headers = {};
-        this.username = null;
-        this.password = null;
-        this.exp = null;
-        this.created = {};
-        this.updated = {};
-        this.deleted = {};
-        this.pendingRequests = 0;
+        this.baseUrl         = url ;
+        this.headers         = {}  ;
+        this.username        = null;
+        this.password        = null;
+        this.exp             = null;
+        this.created         = {}  ;
+        this.updated         = {}  ;
+        this.deleted         = {}  ;
+        this.pendingRequests = 0   ;
     }
 
     async setAuth({ username, password }) {
@@ -225,10 +227,12 @@ class ApiConnection {
     async login() {
         logger.log('info', `login to ${this.baseUrl}`);
         const token = await request({
-            body: { password: this.password, username: this.username },
-            json: true,
+            body: { 
+                password: this.password,
+                username: this.username },
+            json  : true,
             method: 'POST',
-            uri: `${this.baseUrl}/token`,
+            uri   : `${this.baseUrl}/token`,
         });
         this.headers.Authorization = token.kbToken;
         const tokenContent = jwt.decode(token.kbToken);
@@ -257,9 +261,9 @@ class ApiConnection {
         const startTime = new Date().getTime();
         const req = {
             headers: this.headers,
-            json: true,
-            method: method || 'GET',
-            uri: `${this.baseUrl}/${uri.replace(/^\//, '')}`,
+            json   : true,
+            method : method || 'GET',
+            uri    : `${this.baseUrl}/${uri.replace(/^\//, '')}`,
         };
 
         if (body) {
@@ -299,9 +303,11 @@ class ApiConnection {
                 logger.error(errorMessage);
             } else if (retries > 0) {
                 if (err.statusCode === HTTP_STATUS_CODES.TOO_MANY_REQUESTS) {
+
                     logger.warn(`sleeping ${retryTimeoutMs} ms due to ${err.statusCode} error`);
                     await sleep(retryTimeoutMs);
                     return this.request({ ...opt, retries: retries - 1 });
+
                 } if (err.statusCode >= 500) {
                     logger.warn(`sleeping ${serverRetryTimeoutMs} ms due to ${err.statusCode} error`);
                     await sleep(serverRetryTimeoutMs);
@@ -398,13 +404,13 @@ class ApiConnection {
             target,
             filters,
             sort: sortFunc = () => 0,
-            neighbors = 1,
-        } = opt;
+                 neighbors = 1,
+                 }         = opt;
 
         const { result: records } = await this.request({
-            body: { filters, neighbors, target },
+            body  : { filters, neighbors, target },
             method: 'POST',
-            uri: '/query',
+            uri   : '/query',
         });
         records.sort(sortFunc);
 
@@ -534,28 +540,32 @@ class ApiConnection {
     }
 
     /**
-     * @param {object} opt
-     * @param {string} opt.target
-     * @param {object} opt.content
-     * @param {boolean} [opt.existsOk=false] do not error if a record cannot be created because it already exists
-     * @param {object} [opt.fetchConditions=null] the filters clause to be used in attempting to fetch this record
-     * @param {boolean} [opt.fetchExisting=true] return the record if it already exists
-     * @param {boolean} [opt.fetchFirst=false] attempt to fetch the record before trying to create it
-     * @param {function} opt.sortFunc function to be used in order records if multiple are returned to limit the result to 1
+     * @param {object  }  opt
+     * @param {string  }  opt.target
+     * @param {object  }  opt.content
+     * @param {boolean } [opt.existsOk=false] do not error if a record cannot be created because it already exists
+     * @param {object  } [opt.fetchConditions=null] the filters clause to be used in attempting to fetch this record
+     * @param {boolean } [opt.fetchExisting=true] return the record if it already exists
+     * @param {boolean } [opt.fetchFirst=false] attempt to fetch the record before trying to create it
+     * @param {function}  opt.sortFunc function to be used in order records if multiple are returned to limit the result to 1
      */
     async addRecord(opt) {
+
+        console.log('\x1b[94m addRecord invoked with\x1b[0m:', opt);
+
         const {
             content,
             target,
-            existsOk = false,
-            fetchConditions = null,
-            fetchExisting = true,
-            fetchFirst = false,
-            sortFunc = () => 0,
-            upsert = false,
+            existsOk           = false,
+            fetchConditions    = null,
+            fetchExisting      = true,
+            fetchFirst         = false,
+            sortFunc           = () => 0,
+            upsert             = false,
             upsertCheckExclude = [],
-        } = opt;
-        const model = schema.get(target);
+            }                  = opt;
+
+        const model   = schema.get(target);
         const filters = fetchConditions || convertRecordToQueryFilters(content);
 
         if (fetchFirst || upsert) {
@@ -580,9 +590,9 @@ class ApiConnection {
 
         try {
             const { result } = jc.retrocycle(await this.request({
-                body: content,
+                body  : content,
                 method: 'POST',
-                uri: model.routeName,
+                uri   : model.routeName,
             }));
 
             if (this.created[model.name] === undefined) {
@@ -613,11 +623,11 @@ class ApiConnection {
     async addSource(content, opt = {}) {
         return this.addRecord({
             content,
-            existsOk: true,
+            existsOk       : true,
             fetchConditions: { name: content.name },
-            fetchFirst: true,
-            target: 'Source',
-            upsert: true,
+            fetchFirst     : true,
+            target         : 'Source',
+            upsert         : true,
             ...opt,
         });
     }

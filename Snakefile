@@ -11,28 +11,29 @@ if not os.path.exists(DATA_DIR):
 if not os.path.exists(LOGS_DIR):
     os.mkdir(LOGS_DIR)
 
-DRUGBANK_EMAIL = config.get('drugbank_email')
-DRUGBANK_PASSWORD = config.get('drugbank_password')
-USE_DRUGBANK = DRUGBANK_EMAIL or DRUGBANK_PASSWORD
-COSMIC_EMAIL = config.get('cosmic_email')
-COSMIC_PASSWORD = config.get('cosmic_password')
-USE_COSMIC = COSMIC_EMAIL or COSMIC_PASSWORD
+DRUGBANK_EMAIL    = config        .get('drugbank_email')
+DRUGBANK_PASSWORD = config        .get('drugbank_password')
+USE_DRUGBANK      = DRUGBANK_EMAIL or DRUGBANK_PASSWORD
+COSMIC_EMAIL      = config        .get('cosmic_email')
+COSMIC_PASSWORD   = config        .get('cosmic_password')
+USE_COSMIC        = COSMIC_EMAIL   or COSMIC_PASSWORD
+
 BACKFILL_TRIALS = config.get('trials')
-GITHUB_DATA = 'https://raw.githubusercontent.com/bcgsc/pori_graphkb_loader/develop/data'
-CONTAINER = 'docker://bcgsc/pori-graphkb-loader:latest'
+GITHUB_DATA     = 'https://raw.githubusercontent.com/bcgsc/pori_graphkb_loader/develop/data'
+CONTAINER       = 'docker://bcgsc/pori-graphkb-loader:latest'
 
 rule all:
-    input: f'{DATA_DIR}/civic.COMPLETE',
-        f'{DATA_DIR}/cgi.COMPLETE',
-        f'{DATA_DIR}/docm.COMPLETE',
-        f'{DATA_DIR}/PMC4468049.COMPLETE',
-        f'{DATA_DIR}/PMC4232638.COMPLETE',
-        f'{DATA_DIR}/uberon.COMPLETE',
-        f'{DATA_DIR}/ncitFdaXref.COMPLETE',
-        f'{DATA_DIR}/fdaApprovals.COMPLETE',
-        f'{DATA_DIR}/cancerhotspots.COMPLETE',
-        *([f'{DATA_DIR}/clinicaltrialsgov.COMPLETE'] if BACKFILL_TRIALS else []),
-        *([f'{DATA_DIR}/cosmic_resistance.COMPLETE', f'{DATA_DIR}/cosmic_fusions.COMPLETE'] if USE_COSMIC else [])
+    input:     f'{DATA_DIR}/civic.COMPLETE'            ,
+               f'{DATA_DIR}/cgi.COMPLETE'              ,
+               f'{DATA_DIR}/docm.COMPLETE'             ,
+               f'{DATA_DIR}/PMC4468049.COMPLETE'       ,
+               f'{DATA_DIR}/PMC4232638.COMPLETE'       ,
+               f'{DATA_DIR}/uberon.COMPLETE'           ,
+               f'{DATA_DIR}/ncitFdaXref.COMPLETE'      ,
+               f'{DATA_DIR}/fdaApprovals.COMPLETE'     ,
+               f'{DATA_DIR}/cancerhotspots.COMPLETE'   ,
+        *([    f'{DATA_DIR}/clinicaltrialsgov.COMPLETE'] if BACKFILL_TRIALS else []),
+        *([    f'{DATA_DIR}/cosmic_resistance.COMPLETE', f'{DATA_DIR}/cosmic_fusions.COMPLETE'] if USE_COSMIC else [])
 
 
 rule download_ncit:

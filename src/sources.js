@@ -103,10 +103,10 @@ const sources = {
     ensembl: {
         description: 'Ensembl is a genome browser for vertebrate genomes that supports research in comparative genomics, evolution, sequence variation and transcriptional regulation. Ensembl annotate genes, computes multiple alignments, predicts regulatory function and collects disease data. Ensembl tools include BLAST, BLAT, BioMart and the Variant Effect Predictor (VEP) for all supported species.',
         displayName: 'Ensembl',
-        name: 'ensembl',
-        sort: 3,
-        url: 'https://uswest.ensembl.org',
-        usage: 'https://uswest.ensembl.org/info/about/legal/disclaimer.html',
+        name       : 'ensembl',
+        sort       : 3,
+        url        : 'https://uswest.ensembl.org',
+        usage      : 'https://uswest.ensembl.org/info/about/legal/disclaimer.html',
     },
     entrezGene: {
         description: 'Gene integrates information from a wide range of species. A record may include nomenclature, Reference Sequences (RefSeqs), maps, pathways, variations, phenotypes, and links to genome-, phenotype-, and locus-specific resources worldwide.',

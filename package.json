@@ -32,6 +32,7 @@
     "read-excel-file": "^4.0.1",
     "request-promise": "^4.2.4",
     "sleep-promise": "^8.0.1",
+    "typescript": "^4.4.4",
     "winston": "^3.2.1",
     "xml-stream": "^0.4.5",
     "xml2js": "^0.4.19"
