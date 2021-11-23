@@ -28,7 +28,7 @@ const   cosmicResistance                     = require('../src/cosmic/resistance
 const   cosmicFusions                        = require('../src/cosmic/fusions'         );
 
 const API_MODULES = {
-    clinicaltrialsgov, dgidb, docm, fdaApprovals, oncotree,
+    asco, clinicaltrialsgov, dgidb, docm, fdaApprovals, oncotree,
 };
 
 const FILE_MODULES = {
