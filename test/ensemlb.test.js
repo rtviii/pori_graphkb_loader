@@ -118,8 +118,7 @@ test("Upload KRAS protein", async()=>{
         target: 'Feature',
     }) 
 
-    console.log(protein)
     expect(protein[0]).toHaveProperty('sourceId', 'np_001309769')
-    expect(protein[0]).toHaveProperty('sourceIdVersion', null)
+    expect(protein[0]).toHaveProperty('sourceIdVersion', '')
 
 })
